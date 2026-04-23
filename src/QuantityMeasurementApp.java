@@ -1,58 +1,45 @@
 /**
  * QuantityMeasurementApp
- * UC2: Feet and Inches Equality Check
+ * UC3: Generic Quantity Length (DRY Principle)
  */
 
-class Feet {
+class Quantity {
+
     private double value;
+    private String unit;
 
-    public Feet(double value) {
+    // Conversion constants
+    private static final double FEET_TO_INCH = 12.0;
+
+    public Quantity(double value, String unit) {
         this.value = value;
+        this.unit = unit;
     }
 
-    public boolean equals(Feet other) {
-        return this.value == other.value;
-    }
-}
-
-class Inches {
-    private double value;
-
-    public Inches(double value) {
-        this.value = value;
+    // Convert everything to a common unit (inches)
+    private double toInches() {
+        if (unit.equalsIgnoreCase("feet")) {
+            return value * FEET_TO_INCH;
+        } else if (unit.equalsIgnoreCase("inch")) {
+            return value;
+        }
+        throw new IllegalArgumentException("Invalid unit");
     }
 
-    public boolean equals(Inches other) {
-        return this.value == other.value;
+    public boolean equals(Quantity other) {
+        return this.toInches() == other.toInches();
     }
 }
 
 public class QuantityMeasurementApp {
 
-    public static boolean compareFeet(double value1, double value2) {
-        Feet f1 = new Feet(value1);
-        Feet f2 = new Feet(value2);
-        return f1.equals(f2);
-    }
-
-    public static boolean compareInches(double value1, double value2) {
-        Inches i1 = new Inches(value1);
-        Inches i2 = new Inches(value2);
-        return i1.equals(i2);
-    }
-
     public static void main(String[] args) {
 
-        double feet1 = 5.0;
-        double feet2 = 5.0;
+        Quantity q1 = new Quantity(1, "feet");
+        Quantity q2 = new Quantity(12, "inch");
 
-        double inch1 = 12.0;
-        double inch2 = 12.0;
+        boolean result = q1.equals(q2);
 
-        boolean feetResult = compareFeet(feet1, feet2);
-        boolean inchResult = compareInches(inch1, inch2);
-
-        System.out.println("Feet equal? " + feetResult);
-        System.out.println("Inches equal? " + inchResult);
+        System.out.println("Are quantities equal? " + result);
     }
 }
